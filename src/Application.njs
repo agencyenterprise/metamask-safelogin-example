@@ -6,7 +6,12 @@ import Home from './Home.njs'
 class Application extends Nullstack {
 
   prepare(context) {
-    context.wallet = {type: undefined, address: undefined, balance: 0}
+    context.wallet = {
+      signature: undefined,
+      type: undefined,
+      address: undefined,
+      balance: 0
+    }
     context._web3 = {}
     context.connected = false
   }

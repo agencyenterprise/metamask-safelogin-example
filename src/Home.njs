@@ -3,8 +3,13 @@ import './Home.scss';
 import Web3 from 'web3/dist/web3.min.js'
 import MetaMaskOnboarding from "@metamask/onboarding"
 
+const SIGNING_MESSAGE = "Hello from Token Runners!"
+
 class Home extends Nullstack {
-  connected = false
+
+  // This is hard-coded but in a normal scenario, each user would have this
+  // stored as part of their user data, managed by your app.
+  userSignature = "0x77d63a4f000dc3af3456968df95a42c2b72fd3d2144bc527a9e87bdbea25a8e56dd868670fe57d3261fd968fa985d7c62e95fec553454c7349be0953e31ff9f61c";
 
   prepare({project, page}) {
     page.title = `${project.name} - Welcome to Nullstack!`;
@@ -13,23 +18,32 @@ class Home extends Nullstack {
 
   async hydrate(context) {
     const {wallet} = context;
+
     this._onboarding = new MetaMaskOnboarding()
-    context.connected = false
 
     if (MetaMaskOnboarding.isMetaMaskInstalled()) {
-      const [selectedAddress] = await window.ethereum.request({method: 'eth_accounts'})
+      const [account] = await window.ethereum.request({method: 'eth_accounts'})
 
-      context._web3 = new Web3(Web3.givenProvider)
+      const _web3 = new Web3(Web3.givenProvider)
 
-      if (selectedAddress) {
+      if (account) {
+        context.connected = true
         wallet.type = 'metamask'
-        wallet.address = selectedAddress
-        wallet.balance = Web3.utils.fromWei(await context._web3.eth.getBalance(selectedAddress), 'ether')
+        wallet.address = account
+        wallet.balance = Web3.utils.fromWei(await _web3.eth.getBalance(account), 'ether')
+        wallet.signature = this.userSignature
+
+        const signingAddress = await _web3.eth.personal.ecRecover(
+          SIGNING_MESSAGE,
+          this.userSignature,
+        )
+
+        console.log(`signed properly: ${signingAddress}`)
       }
 
       window.ethereum.on('accountsChanged', async ([account]) => {
         wallet.address = account
-        wallet.balance = account ? Web3.utils.fromWei(await context._web3.eth.getBalance(account), 'ether') : 0
+        wallet.balance = account ? Web3.utils.fromWei(await _web3.eth.getBalance(account), 'ether') : 0
 
         if (!account) {
           location.reload()
@@ -38,6 +52,7 @@ class Home extends Nullstack {
 
       window.ethereum.on('chainChanged', () => window.location.reload())
 
+      context._web3 = _web3
       this._onboarding.stopOnboarding()
     }
   }
@@ -51,18 +66,38 @@ class Home extends Nullstack {
     )
   }
 
-  disconnect({wallet}) {
+  disconnect(context) {
+    context.connected = false
+    context.wallet = {
+      signature: undefined,
+      type: undefined,
+      address: undefined,
+      balance: 0
+    }
 
+    location.reload()
   }
 
   async connect(context) {
-    const {wallet} = context
+    const {_web3, signed, wallet} = context
     if (MetaMaskOnboarding.isMetaMaskInstalled()) {
       const [account] = await window.ethereum.request({method: 'eth_requestAccounts'})
 
+
       if (account) {
+        const sig = await _web3.eth.personal.sign(
+          SIGNING_MESSAGE,
+          account,
+          // "test password",
+        )
+
+        console.log(`signed: ${sig}`)
         wallet.address = account
+        wallet.signature = sig
+
         context.connected = true
+
+        console.log(context)
       }
     } else {
       this._onboarding.startOnboarding()
@@ -77,9 +112,9 @@ class Home extends Nullstack {
             if (!connected) {
               await this.connect({wallet})
             } else {
-              instance.disconnect()
+              this.disconnect()
             }
-          }}>{connected ? 'Disconnect' : 'Connect'}</button>
+          }}>{connected ? 'Disconnect' : 'Connect Wallet'}</button>
       </main>
     )
   }
