@@ -13,3 +13,8 @@ for a safer login flow with MetaMask. This is how it works:
    against the signature that we're generating at runtime (when logged user is
    trying to perform some action that requires verifying that he actually owns
    the wallet) (see implementation at `src/Home.njs`)
+
+Methods used from `web3`:
+
+[`web3.eth.personal.sign`](ttps://web3js.readthedocs.io/en/v1.7.1/web3-eth-personal.html#sign)
+[`web3.eth.personal.ecRecover`](https://web3js.readthedocs.io/en/v1.7.1/web3-eth-personal.html#sign)
