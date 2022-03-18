@@ -1,0 +1,18 @@
+{
+  "name": "metamask-safelogin",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nullstack": "~0.14.0"
+  },
+  "scripts": {
+    "start": "npx nullstack start",
+    "build": "npx nullstack build --mode=ssr"
+  },
+  "dependencies": {
+    "@metamask/onboarding": "^1.0.1",
+    "web3": "^1.7.1"
+  }
+}
