@@ -16,5 +16,5 @@ for a safer login flow with MetaMask. This is how it works:
 
 Methods used from `web3`:
 
-[`web3.eth.personal.sign`](ttps://web3js.readthedocs.io/en/v1.7.1/web3-eth-personal.html#sign)
+[`web3.eth.personal.sign`](https://web3js.readthedocs.io/en/v1.7.1/web3-eth-personal.html#sign)
 [`web3.eth.personal.ecRecover`](https://web3js.readthedocs.io/en/v1.7.1/web3-eth-personal.html#sign)
