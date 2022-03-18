@@ -1,28 +1,16 @@
 # Metamask Safelogin
 
-<img src='https://raw.githubusercontent.com/nullstack/nullstack/master/nullstack.png' height='60' alt='Nullstack' />
+Hello! This is a very simple example of how to implement a signing mechanism
+for a safer login flow with MetaMask. This is how it works:
 
-## How to run this Project
-
-Install the dependencies:
-
-`npm install`
-
-Copy the environment sample to a .env file
-
-```sh
-NULLSTACK_PROJECT_NAME="[dev] Metamask Safelogin"
-NULLSTACK_PROJECT_DOMAIN="localhost"
-NULLSTACK_PROJECT_COLOR="#D22365"
-NULLSTACK_SERVER_PORT="3000"
-```
-
-Run the app in development mode:
-
-`npm start`
-
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-## Learn more about Nullstack
-
-[Read the documentation](https://nullstack.app/documentation)
+1. User connects their wallet by clicking the "Connect Wallet" button
+2. Pop-up for confirming the connection shows up, and user confirms it
+   ![connect](https://user-images.githubusercontent.com/696982/158999992-7bb3455b-b1a6-4e03-9a5a-2562ce354eba.png)
+   ![confirm_connection](https://user-images.githubusercontent.com/696982/159000001-ae36cf5d-b42e-43fc-bdac-04b75ad066da.png)
+3. Pop-up for a signature request shows up, and user can sign it
+   ![signature_request](https://user-images.githubusercontent.com/696982/159000010-81c92aa3-47d3-46bb-a9e4-29a503d1d5e9.png)
+4. Once signed, login flow should proceed normaly.
+6. To verify the user, we check the signature of the user (in the database)
+   against the signature that we're generating at runtime (when logged user is
+   trying to perform some action that requires verifying that he actually owns
+   the wallet) (see implementation at `src/Home.njs`)
